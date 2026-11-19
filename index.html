@@ -1,0 +1,111 @@
+Crée une application web complète de révision de vocabulaire en anglais intitulée "MAPLE SYRUP 4è".
+
+## Informations générales
+- Titre : MAPLE SYRUP 4è
+- Sous-titre : Chapter Vocabulary Revision App
+- Niveau des élèves : 4e
+- Langue enseignée : anglais
+
+## Description
+L’application permet de réviser tous les aspects du vocabulaire du chapitre : orthographe, prononciation et traduction du anglais vers le français et inversement.
+
+## Apparence
+- Thème de couleurs : turquoise et corail, coloré et pétillant
+- Style d’interface : illustré avec de nombreuses images et icônes
+- Application responsive (mobile et desktop), visuellement attractive.
+
+## Structure — onglets inclus
+Flashcards interactives, Dictée de mots, Écriture (FR vers langue ou image vers langue), Traduction (Langue vers FR), Jeu d’appariement, Mots croisés, Évaluation
+
+## Page d’accueil
+- Afficher des cartes avec : mot en anglais (grand), traduction française (petit), image d’illustration
+- Chaque carte lit le mot au clic (Web Speech API / SpeechSynthesis)
+- Possibilité de cocher/décocher chaque carte — les mots décochés sont retirés de tous les onglets
+- Boutons "Tout cocher" et "Tout décocher"
+
+## Onglet Flashcards
+- Carte qui se retourne au clic
+- Deux modes accessibles via boutons sur la même ligne :
+  * Mode 1 : illustration (recto) / mot anglais (verso)
+  * Mode 2 : mot français (recto) / mot anglais (verso)
+- Mode par défaut : illustration vers langue enseignée
+- Icône son sur la face anglais pour entendre la prononciation
+
+## Onglet Dictée
+- Lecture audio du mot en anglais
+- L’élève saisit le mot en anglais
+- Validation par bouton, feedback immédiat (correct/incorrect)
+
+## Onglet Écriture
+- Deux sous-modes accessibles via boutons sur la même ligne :
+  * À partir de la traduction française : écrire en anglais
+  * À partir de l’image : écrire en anglais
+- Bouton de validation pour chaque réponse
+
+## Onglet Traduction FR
+- Affichage du mot en anglais
+- L’élève écrit la traduction en français
+- Validation et feedback immédiat
+
+## Onglet Appariement
+- Deux modes accessibles via boutons sur la même ligne :
+  * Mot anglais / image
+  * Mot anglais / traduction française
+- Affichage 5 mots à la fois — les paires correctes disparaissent et de nouveaux mots les remplacent
+- Continue jusqu’à épuisement de la liste
+
+## Onglet Mots croisés
+- Grille de mots croisés générée à partir du vocabulaire du chapitre, à remplir en anglais
+- Indices utilisés pour deviner chaque mot : définitions en français (indices textuels)
+- Disposition des mots dans la grille : grille classique avec mots horizontaux et verticaux
+- Regrouper les définitions par sens sous les intitulés « Horizontalement → » et « Verticalement ↓ » — une flèche horizontale après « Horizontalement » et une flèche vers le bas après « Verticalement » pour indiquer visuellement le sens de chaque mot
+- Options du jeu : aucune option spécifique
+- La grille est limitée à 12 mots maximum : si le vocabulaire en compte davantage, sélectionner aléatoirement 12 mots parmi la liste (en excluant les mots trop longs pour tenir dans la grille)
+- Bouton « Nouvelle grille » permettant de régénérer une nouvelle disposition avec une nouvelle sélection aléatoire de mots
+IMPORTANT — mots avec espace, article ou particule : certains mots du vocabulaire peuvent contenir un espace (mots composés, expressions) ou être précédés d'un article/d'une particule (article défini ou indéfini, "to" pour un infinitif anglais, etc.). Choisir la méthode la plus simple à mettre en œuvre pour les intégrer à la grille (par exemple retirer les espaces et l'article/la particule avant de placer les lettres dans les cases), mais appliquer strictement cette même règle de normalisation à la fois pour remplir la grille ET pour corriger la saisie de l'élève. Un élève qui a appris et écrit correctement le mot ne doit jamais être compté faux à cause d'un espace ou d'un article absent dans la grille : indiquer clairement la règle retenue au-dessus de la grille (ex. « Écrivez les mots sans espace ni article »).
+- Mise en page en deux colonnes : la grille à gauche, la liste des définitions à droite, afin de limiter au maximum le défilement vertical sur petit écran (empiler grille puis définitions uniquement si la largeur d'écran l'impose)
+- Chaque réussite ou erreur sur un mot de la grille est enregistrée et remonte dans l'onglet Statistiques d'entraînement (modalité « mots croisés »)
+
+## Onglet Évaluation
+- Mode : Évaluation d’entraînement (feedback immédiat après chaque réponse, pas de note finale)
+- L’élève saisit son pseudo au format : CLASSE + 3 premières lettres du nom + 3 premières lettres du prénom
+  (exemple : 6BDURTOT pour Toto Durand en 6eB)
+- 10 questions par session, mélangées aléatoirement
+- Types de questions : QCM image vers mot, QCM mot vers traduction, écriture libre en langue étrangère, dictée audio, glisser-déposer mot vers image, appariement mot vers traduction
+- Options de passation : aucune option de passation spécifique
+- Classement affiché : score sur 20
+- Le classement est persistant via localStorage
+IMPORTANT — feedback immédiat et révision ciblée :
+- Le feedback doit être immédiat : après chaque réponse (correct/incorrect, avec la bonne réponse en cas d’erreur), puis dès la fin de l’évaluation, afficher le bilan détaillé mot par mot : mots réussis et mots échoués, avec la bonne réponse pour chaque erreur
+- Mettre l’accent sur le fait que l’élève doit réviser EN PRIORITÉ les mots où il a fait une erreur : les afficher en tête du bilan, de façon bien visible (ex. encadré « À réviser en priorité »)
+- Sous le bilan, afficher ce message à l’élève : « Veux-tu que l’application sélectionne automatiquement les mots à réviser ? Seuls les mots où tu as fait une erreur resteront dans les activités d’entraînement. » avec deux boutons « Oui, sélectionner mes mots à réviser » et « Non merci »
+- Si l’élève accepte : décocher sur la page d’accueil tous les mots qui ont été corrects lors de l’évaluation (ils sont donc retirés de tous les onglets d’entraînement) et laisser cochés uniquement les mots échoués ; sauvegarder cette sélection dans localStorage et confirmer l’action par un court message
+- Cette action doit être réversible : le message de confirmation précise que l’élève peut à tout moment revenir à la révision de tous les mots via le bouton « Tout cocher » de la page d’accueil (ou en recochant les mots un par un)
+
+## Données vocabulaire (16 mots)
+  - anglais : "maple syrup" | Français : "du sirop d'érable"
+  - anglais : "a maple leaf" | Français : "une feuille d'érable"
+  - anglais : "a maple tree" | Français : "un érable"
+  - anglais : "to taste" | Français : "avoir goût"
+  - anglais : "snow" | Français : "de la neige"
+  - anglais : "to come from" | Français : "venir de"
+  - anglais : "a waffle" | Français : "une gauffre"
+  - anglais : "bread" | Français : "du pain"
+  - anglais : "sweet" | Français : "sucré"
+  - anglais : "a lollipop" | Français : "une sucette"
+  - anglais : "a language" | Français : "une langue"
+  - anglais : "bilingual" | Français : "bilingue"
+  - anglais : "packaging" | Français : "emballage"
+  - anglais : "to find" | Français : "trouver"
+  - anglais : "to create" | Français : "créer"
+  - anglais : "a product" | Français : "un produit"
+
+## Contraintes techniques
+- Application en une seule page HTML autonome
+- Synthèse vocale via Web Speech API (SpeechSynthesis) par défaut pour la prononciation
+- Sauvegarde locale via localStorage
+- Compatible mobile et desktop
+- Ajouter dans le <head> : <meta name="referrer" content="no-referrer"> pour les images et fichiers audio Nextcloud
+- Pour toutes les URL Nextcloud (nuage.apps.education.fr) — images comme fichiers audio —, s’assurer qu’elles se terminent par /download — les ajouter automatiquement si absent
+- Fallback si URL image indisponible : afficher un espace neutre ou une icône générique
+- Les images de vocabulaire ne doivent jamais être rognées ni tronquées dans leurs tuiles d’aperçu (cartes d’accueil, flashcards, mots croisés…) : utiliser un ajustement de type object-fit: contain (image entière toujours visible, quitte à laisser un léger espace vide autour) plutôt que object-fit: cover
