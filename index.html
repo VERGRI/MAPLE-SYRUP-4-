@@ -45,7 +45,30 @@ function render(){
  const i=ids[position%ids.length], [en,fr]=words[i];const p=frame(tabs[tab],['','Flip each card to check the English word.','Listen and type what you hear.','Write the word in English.','Translate the French word or phrase into English.'][tab]);
  if(tab===1||tab===3)modes(p,['Picture → English','French → English']);
  const q=document.createElement('div');q.className='prompt';p.append(q);
- if(tab===1){q.innerHTML=flip?'<h3>'+esc(en)+'</h3>':mode?'<h3 lang="fr">'+esc(fr)+'</h3>':pic(i);q.append(button('Flip card',()=>{flip=!flip;render()}));if(flip)sound(i,q)}
+ if(tab===1){
+ const front=document.createElement('div');
+ front.innerHTML=mode?'<h3 lang="fr">'+esc(fr)+'</h3>':pic(i);
+ const back=document.createElement('div');
+ const answer=document.createElement('h3');
+ answer.setAttribute('aria-live','polite');
+ back.append(answer);
+ const audioControls=document.createElement('div');
+ sound(i,audioControls);
+ back.append(audioControls);
+ const toggle=button('Show English word',()=>{
+   flip=!flip;
+   updateCard();
+ });
+ function updateCard(){
+   front.hidden=flip;
+   answer.textContent=flip?en:'';
+   audioControls.hidden=!flip;
+   toggle.textContent=flip?(mode?'Show French':'Show picture'):'Show English word';
+   toggle.setAttribute('aria-pressed',String(flip));
+ }
+ q.append(toggle,front,back);
+ updateCard();
+ }
  else {if(tab===2)sound(i,q);if(tab===3)q.innerHTML=mode?'<h3 lang="fr">'+esc(fr)+'</h3>':pic(i);if(tab===4)q.innerHTML='<h3 lang="fr">'+esc(fr)+'</h3>';const lang=0;const form=response(q,value=>{const correct=accepts(value,i,lang);record(i,tabs[tab],correct);feedback.textContent=correct?'Correct!':'Correct answer: '+words[i][lang];form.querySelector('button').disabled=true});const feedback=status(q)}
  const a=actions(p);a.append(button('Previous',()=>{position=(position+ids.length-1)%ids.length;flip=false;render()}),document.createTextNode((position+1)+' / '+ids.length),button('Next',()=>{position=(position+1)%ids.length;flip=false;render()}));
 }
